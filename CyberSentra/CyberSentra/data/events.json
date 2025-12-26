@@ -1,0 +1,50 @@
+[
+  {
+    "time": "2025-12-09 10:15:00",
+    "type": "Security",
+    "severity": "Information",
+    "user": "CORP\\jdoe",
+    "process": "explorer.exe",
+    "details": "User logon successful."
+  },
+  {
+    "time": "2025-12-09 10:45:22",
+    "type": "Sysmon",
+    "severity": "Warning",
+    "user": "CORP\\svc_backup",
+    "process": "powershell.exe",
+    "details": "Script executed from unusual directory."
+  },
+  {
+    "time": "2025-12-09 10:45:22",
+    "type": "Security",
+    "severity": "Warning",
+    "user": "CORP\\svc_backup",
+    "process": "powershell.exe",
+    "details": "Failed Loginn Attempt."
+  },
+  {
+    "time": "2025-12-09 09:03:10",
+    "type": "Application",
+    "severity": "Error",
+    "user": "CORP\\asmith",
+    "process": "chrome.exe",
+    "details": "Crash reported in browser process."
+  },
+  {
+    "time": "2025-12-09 09:03:10",
+    "type": "Sysmon",
+    "severity": "Warning",
+    "user": "CORP\\asmith",
+    "process": "powershell.exe",
+    "details": "Script executed from unusual directory."
+  },
+  {
+    "time": "2025-12-09 08:30:00",
+    "type": "Security",
+    "severity": "Error",
+    "user": "CORP\\jdoe",
+    "process": "winlogon.exe",
+    "details": "Multiple failed login attempts."
+  }
+]

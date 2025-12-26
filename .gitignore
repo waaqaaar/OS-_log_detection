@@ -1,0 +1,50 @@
+# Build results
+**/bin/
+**/obj/
+**/publish/
+**/TestResults/
+
+# .NET artifacts
+*.dll
+*.exe
+*.pdb
+*.cache
+*.deps.json
+*.runtimeconfig.json
+
+# NuGet
+*.nupkg
+*.snupkg
+**/packages/
+**/PackageReference/
+
+# Logs
+*.log
+
+# SQLite / local data
+*.db
+*.sqlite
+*.sqlite3
+*.db-shm
+*.db-wal
+*.db-journal
+
+# User-specific files
+*.user
+*.rsuser
+*.suo
+*.userosscache
+*.sln.docstates
+
+# IDEs
+.vs/
+.vscode/
+.idea/
+
+# OS
+Thumbs.db
+Desktop.ini
+
+# Avalonia designer
+*.Designer.cs
+

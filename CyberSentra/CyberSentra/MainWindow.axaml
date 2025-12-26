@@ -1,0 +1,255 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        x:Class="CyberSentra.MainWindow"
+        Width="1280" Height="800"
+        MinWidth="1024" MinHeight="600"
+        Background="{StaticResource MainBackground}"
+        Title="CyberSentra"
+
+        SystemDecorations="None"
+        ExtendClientAreaToDecorationsHint="True"
+        ExtendClientAreaChromeHints="NoChrome"
+        ExtendClientAreaTitleBarHeightHint="44">
+    <Window.Resources>
+	        <!-- You can tweak these anytime -->
+        <SolidColorBrush x:Key="AccentBrush" Color="#4F8CFF"/>
+        <SolidColorBrush x:Key="SidebarCardBrush" Color="#0F1726"/>
+        <SolidColorBrush x:Key="NavHoverBrush" Color="#18233A"/>
+        <SolidColorBrush x:Key="NavPressedBrush" Color="#1E2C47"/>
+        <SolidColorBrush x:Key="NavActiveBrush" Color="#1A233B"/>
+        <SolidColorBrush x:Key="NavBorderBrush" Color="#22314D"/>
+        <CornerRadius x:Key="NavCornerRadius">10</CornerRadius>	
+    </Window.Resources>
+    <!-- Local design tokens + reusable styles (kept inside window for now) -->
+    <Window.Styles>
+
+
+        <!-- Sidebar button style (applies to buttons with class 'nav') -->
+        <Style Selector="Button.nav">
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="Padding" Value="14,12"/>
+            <Setter Property="CornerRadius" Value="{StaticResource NavCornerRadius}"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
+            <Setter Property="FontSize" Value="13"/>
+        </Style>
+
+        <Style Selector="Button.nav:pointerover">
+            <Setter Property="Background" Value="{StaticResource NavHoverBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource NavBorderBrush}"/>
+            <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+        </Style>
+
+        <Style Selector="Button.nav:pressed">
+            <Setter Property="Background" Value="{StaticResource NavPressedBrush}"/>
+        </Style>
+
+        <Style Selector="Button.nav:focus">
+            <Setter Property="BorderBrush" Value="{StaticResource AccentBrush}"/>
+        </Style>
+
+        <!-- Active button (driven by Classes in C#) -->
+        <Style Selector="Button.nav.active">
+            <Setter Property="Background" Value="{StaticResource NavActiveBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource NavBorderBrush}"/>
+            <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+        </Style>
+
+        <!-- Left accent bar inside active button -->
+        <Style Selector="Border.active-indicator">
+            <Setter Property="Width" Value="3"/>
+            <Setter Property="CornerRadius" Value="2"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Margin" Value="0,2,10,2"/>
+        </Style>
+        <Style Selector="Button.nav.active Border.active-indicator">
+            <Setter Property="Background" Value="{StaticResource AccentBrush}"/>
+        </Style>
+
+        <Style Selector="TextBlock.sidebar-title">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+        </Style>
+
+        <Style Selector="TextBlock.sidebar-sub">
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
+        </Style>
+    </Window.Styles>
+       <!-- Root layout now has a TitleBar row + content row -->
+    <Grid RowDefinitions="44,*">
+             <!-- ===== Custom Title Bar ===== -->
+        <Border Grid.Row="0"
+                Background="{StaticResource SidebarCardBrush}"
+                BorderBrush="{StaticResource NavBorderBrush}"
+                BorderThickness="0,0,0,1">
+
+            <Grid ColumnDefinitions="Auto,*,Auto" Height="44">
+
+                <!-- App title / logo area -->
+                <StackPanel Orientation="Horizontal"
+                            VerticalAlignment="Center"
+                            Margin="14,0"
+                            Spacing="10">
+                    <Image Source="Assets/logo.png" Width="20" Height="20" Stretch="Uniform"/>
+                    <TextBlock Text="CyberSentra"
+                               FontSize="13"
+                               FontWeight="SemiBold"
+                               Foreground="{StaticResource TextPrimaryBrush}"/>
+                </StackPanel>
+
+                <!-- Drag region (mouse down = move window) -->
+                <Border Grid.Column="1"
+                        x:Name="TitleBarDragArea"
+                        Background="Transparent" />
+
+                <!-- Window controls -->
+                <StackPanel Grid.Column="2"
+                            Orientation="Horizontal"
+                            VerticalAlignment="Center"
+                            Margin="0,0,10,0"
+                            Spacing="6">
+
+                    <Button Classes="winbtn"
+                            ToolTip.Tip="Minimize"
+                            Click="Minimize_Click">
+                        <TextBlock Text="—" FontSize="14" FontWeight="SemiBold"/>
+                    </Button>
+
+                    <Button Classes="winbtn"
+                            ToolTip.Tip="Maximize / Restore"
+                            Click="MaximizeRestore_Click">
+                        <TextBlock Text="▢" FontSize="12" FontWeight="SemiBold"/>
+                    </Button>
+
+                    <Button Classes="winbtn danger"
+                            ToolTip.Tip="Close"
+                            Click="Close_Click">
+                        <TextBlock Text="✕" FontSize="12" FontWeight="SemiBold"/>
+                    </Button>
+
+                </StackPanel>
+            </Grid>
+        </Border>
+    <Grid Grid.Row="1">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="280"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- ============ SIDEBAR ============ -->
+        <Border Grid.Column="0"
+                Background="{StaticResource SidebarBackground}">
+            <Border Margin="16"
+                    Background="{StaticResource SidebarCardBrush}"
+                    CornerRadius="16"
+                    BorderBrush="{StaticResource NavBorderBrush}"
+                    BorderThickness="1"
+                    BoxShadow="0 12 30 #33000000">
+
+                <Grid RowDefinitions="Auto,Auto,*,Auto" Margin="18">
+                    <!-- Brand -->
+                    <StackPanel Spacing="10">
+                        <Image Source="Assets/logo.png"
+                               Width="88" Height="88"
+                               Stretch="Uniform"/>
+
+                        <TextBlock Text="CyberSentra" Classes="sidebar-title"/>
+                        <TextBlock Text="Security Console" Classes="sidebar-sub"/>
+
+                        <Separator Margin="0,14,0,10"
+                                   Background="{StaticResource BorderDarkBrush}"/>
+                    </StackPanel>
+
+                    <!-- Nav -->
+                    <StackPanel Grid.Row="2" Spacing="8">
+                        <Button x:Name="DashboardButton" Classes="nav" Click="DashboardButton_Click">
+                            <DockPanel>
+                                <Border Classes="active-indicator"/>
+                                <TextBlock Text="Dashboard" VerticalAlignment="Center"/>
+                            </DockPanel>
+                        </Button>
+
+                        <Button x:Name="EventsButton" Classes="nav" Click="EventsButton_Click">
+                            <DockPanel>
+                                <Border Classes="active-indicator"/>
+                                <TextBlock Text="Events" VerticalAlignment="Center"/>
+                            </DockPanel>
+                        </Button>
+
+                        <Button x:Name="ThreatsButton" Classes="nav" Click="ThreatsButton_Click">
+                            <DockPanel>
+                                <Border Classes="active-indicator"/>
+                                <TextBlock Text="Threats" VerticalAlignment="Center"/>
+                            </DockPanel>
+                        </Button>
+
+                        <Button x:Name="MlAnomaliesButton" Classes="nav" Click="MlAnomaliesButton_Click">
+                            <DockPanel>
+                                <Border Classes="active-indicator"/>
+                                <TextBlock Text="ML Anomalies" VerticalAlignment="Center"/>
+                            </DockPanel>
+                        </Button>
+
+                        <Button x:Name="AdUsersButton" Classes="nav" Click="AdUsersButton_Click">
+                            <DockPanel>
+                                <Border Classes="active-indicator"/>
+                                <TextBlock Text="AD Users" VerticalAlignment="Center"/>
+                            </DockPanel>
+                        </Button>
+
+                        <Button x:Name="ThreatHistoryButton" Classes="nav" Click="ThreatHistoryButton_Click">
+                            <DockPanel>
+                                <Border Classes="active-indicator"/>
+                                <TextBlock Text="Threat History" VerticalAlignment="Center"/>
+                            </DockPanel>
+                        </Button>
+
+                        <Button x:Name="MLHistoryButton" Classes="nav" Click="MLHistoryButton_Click">
+                            <DockPanel>
+                                <Border Classes="active-indicator"/>
+                                <TextBlock Text="ML History" VerticalAlignment="Center"/>
+                            </DockPanel>
+                        </Button>
+
+                        <Separator Margin="0,10,0,10"
+                                   Background="{StaticResource BorderDarkBrush}"/>
+
+                        <Button x:Name="SettingsButton" Classes="nav" Click="SettingsButton_Click" IsVisible="False">
+                            <DockPanel>
+                                <Border Classes="active-indicator"/>
+                                <TextBlock Text="Settings" VerticalAlignment="Center" IsVisible="False"/>
+                            </DockPanel>
+                        </Button>
+                    </StackPanel>
+
+                    <!-- Footer -->
+                    <StackPanel Grid.Row="3" Spacing="2">
+                        <Separator Margin="0,10,0,10"
+                                   Background="{StaticResource BorderDarkBrush}"/>
+
+                        <TextBlock Text="Asfahan Umer" Classes="sidebar-sub"/>
+                        <TextBlock Text="Waqar | Abdullah" Classes="sidebar-sub"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Border>
+
+        <!-- ============ MAIN CONTENT HOST ============ -->
+        <Border Grid.Column="1"
+                Background="{StaticResource MainBackground}">
+            <Border Margin="18"
+                    Background="Transparent"
+                    CornerRadius="16">
+                <ContentControl x:Name="MainContent" Margin="6"/>
+            </Border>
+        </Border>
+    </Grid>
+        </Grid>
+</Window>

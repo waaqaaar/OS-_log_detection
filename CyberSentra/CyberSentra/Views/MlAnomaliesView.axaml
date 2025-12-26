@@ -1,0 +1,316 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.Avalonia;assembly=LiveChartsCore.SkiaSharpView.Avalonia"
+             mc:Ignorable="d"
+             d:DesignWidth="1800" d:DesignHeight="1050"
+             x:CompileBindings="False"
+             x:Class="CyberSentra.MlAnomaliesView">
+
+  <UserControl.Styles>
+
+    <Style Selector="Border.page-card">
+      <Setter Property="CornerRadius" Value="16"/>
+      <Setter Property="Padding" Value="14"/>
+      <Setter Property="Background" Value="#0F1726"/>
+    </Style>
+
+    <Style Selector="TextBox.field">
+      <Setter Property="Padding" Value="10,6"/>
+      <Setter Property="CornerRadius" Value="12"/>
+      <Setter Property="BorderThickness" Value="1"/>
+      <Setter Property="BorderBrush" Value="{StaticResource BorderDarkBrush}"/>
+      <Setter Property="Background" Value="#0B1324"/>
+      <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+      <Setter Property="Height" Value="36"/>
+    </Style>
+
+    <Style Selector="Button.pill">
+      <Setter Property="Padding" Value="12,6"/>
+      <Setter Property="CornerRadius" Value="12"/>
+      <Setter Property="BorderThickness" Value="1"/>
+      <Setter Property="BorderBrush" Value="{StaticResource BorderDarkBrush}"/>
+      <Setter Property="Background" Value="Transparent"/>
+      <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
+      <Setter Property="FontSize" Value="12"/>
+    </Style>
+    <Style Selector="Button.pill:pointerover">
+      <Setter Property="Background" Value="#16223A"/>
+      <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+    </Style>
+
+    <Style Selector="Button.pill.soft">
+      <Setter Property="Background" Value="{StaticResource AccentSoftBrush}"/>
+      <Setter Property="BorderBrush" Value="{StaticResource AccentSoftBrush}"/>
+      <Setter Property="Foreground" Value="{StaticResource SidebarBackground}"/>
+    </Style>
+
+    <Style Selector="DataGrid.modern-grid">
+      <Setter Property="RowHeight" Value="NaN"/>
+      <Setter Property="ColumnHeaderHeight" Value="42"/>
+      <Setter Property="GridLinesVisibility" Value="None"/>
+      <Setter Property="BorderThickness" Value="0"/>
+      <Setter Property="Background" Value="Transparent"/>
+      <Setter Property="HorizontalScrollBarVisibility" Value="Auto"/>
+      <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
+    </Style>
+
+    <Style Selector="DataGrid.modern-grid DataGridColumnHeader">
+      <Setter Property="Background" Value="#0B1324"/>
+      <Setter Property="BorderBrush" Value="{StaticResource BorderDarkBrush}"/>
+      <Setter Property="BorderThickness" Value="0,0,0,1"/>
+      <Setter Property="Padding" Value="10,10"/>
+      <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
+      <Setter Property="FontSize" Value="12"/>
+      <Setter Property="FontWeight" Value="SemiBold"/>
+    </Style>
+
+    <Style Selector="DataGrid.modern-grid DataGridRow:pointerover">
+      <Setter Property="Background" Value="#0B1324"/>
+    </Style>
+
+    <Style Selector="DataGrid.modern-grid DataGridCell">
+      <Setter Property="Padding" Value="10,8"/>
+      <Setter Property="BorderThickness" Value="0"/>
+    </Style>
+
+  </UserControl.Styles>
+
+  <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+    <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="12">
+
+      <!-- Header -->
+      <Grid Grid.Row="0" ColumnDefinitions="*,Auto" ColumnSpacing="12">
+        <StackPanel Spacing="2">
+          <TextBlock Text="ML Anomalies"
+                     Foreground="{StaticResource TextPrimaryBrush}"
+                     FontSize="18"
+                     FontWeight="Bold"/>
+          <TextBlock Text="Last 24 hours • Per-user hourly windows"
+                     Foreground="{StaticResource TextSecondaryBrush}"
+                     FontSize="12"/>
+        </StackPanel>
+
+        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+          <TextBox x:Name="SearchBox"
+                   Classes="field"
+                   Width="240"
+                   Watermark="Search user/window..."
+                   TextChanged="SearchBox_TextChanged"/>
+
+          <ToggleSwitch x:Name="AnomalyOnlySwitch"
+                        Margin="10,20,0,0"
+                        Content="Anomalies only"
+                        VerticalAlignment="Center"
+                        Checked="AnomalyOnlySwitch_Changed"
+                        Unchecked="AnomalyOnlySwitch_Changed"/>
+
+          <Button Classes="pill soft"
+                   Margin="10,0,10,0"
+                  Content="Reload"
+                  Click="ReloadButton_Click"/>
+        </StackPanel>
+      </Grid>
+
+      <!-- Chart card -->
+      <Border Grid.Row="1"
+              Classes="page-card"
+              BorderBrush="{StaticResource BorderDarkBrush}"
+              BorderThickness="1">
+        <StackPanel Spacing="8">
+          <TextBlock Text="Anomaly Score Trend (max per hour)"
+                     FontSize="14"
+                     FontWeight="Bold"
+                     Foreground="{StaticResource TextPrimaryBrush}"/>
+
+          <lvc:CartesianChart Series="{Binding ScoreSeries}"
+                              XAxes="{Binding XAxes}"
+                              YAxes="{Binding YAxes}"
+                              Height="240"/>
+        </StackPanel>
+      </Border>
+
+      <!-- Table + Details -->
+      <Grid Grid.Row="2" ColumnDefinitions="2*,*" ColumnSpacing="12">
+
+        <!-- Table -->
+        <Border Grid.Column="0"
+                Classes="page-card"
+                BorderBrush="{StaticResource BorderDarkBrush}"
+                BorderThickness="1">
+          <DataGrid x:Name="RowsGrid"
+                    Classes="modern-grid"
+                    ItemsSource="{Binding Rows}"
+                    AutoGenerateColumns="False"
+                    IsReadOnly="True"
+                    SelectionMode="Single"
+                    SelectionChanged="RowsGrid_SelectionChanged">
+
+            <DataGrid.Columns>
+
+              <DataGridTemplateColumn Header="User Window" Width="3*">
+                <DataGridTemplateColumn.CellTemplate>
+                  <DataTemplate>
+                    <TextBlock Text="{Binding User}"
+                               MaxLines="2"
+                               TextWrapping="Wrap"
+                               TextTrimming="CharacterEllipsis"/>
+                  </DataTemplate>
+                </DataGridTemplateColumn.CellTemplate>
+              </DataGridTemplateColumn>
+
+              <DataGridTemplateColumn Header="Score" Width="120">
+                <DataGridTemplateColumn.CellTemplate>
+                  <DataTemplate>
+                    <TextBlock Text="{Binding Score}"
+                               Foreground="{StaticResource AccentBrush}"
+                               FontWeight="SemiBold"/>
+                  </DataTemplate>
+                </DataGridTemplateColumn.CellTemplate>
+              </DataGridTemplateColumn>
+
+              <DataGridTemplateColumn Header="Anomaly" Width="120">
+                <DataGridTemplateColumn.CellTemplate>
+                  <DataTemplate>
+                    <TextBlock Text="{Binding IsAnomaly}"
+                               Foreground="{StaticResource TextSecondaryBrush}"/>
+                  </DataTemplate>
+                </DataGridTemplateColumn.CellTemplate>
+              </DataGridTemplateColumn>
+
+            </DataGrid.Columns>
+          </DataGrid>
+        </Border>
+
+        <!-- Details -->
+        <Border Grid.Column="1"
+                Classes="page-card"
+                BorderBrush="{StaticResource BorderDarkBrush}"
+                BorderThickness="1">
+          <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="12" Spacing="10">
+              <TextBlock Text="Details"
+                         FontSize="16"
+                         FontWeight="Bold"
+                         Foreground="{StaticResource TextPrimaryBrush}"/>
+
+              <TextBlock Text="{Binding SelectedUserWindow}"
+                         Foreground="{StaticResource TextPrimaryBrush}"
+                         FontSize="13"
+                         TextWrapping="Wrap"/>
+
+              <TextBlock Text="{Binding SelectedScoreText}"
+                         Foreground="{StaticResource TextSecondaryBrush}"
+                         FontSize="12"/>
+
+              <TextBlock Text="{Binding SelectedIsAnomalyText}"
+                         Foreground="{StaticResource TextSecondaryBrush}"
+                         FontSize="12"/>
+
+              <Separator Background="{StaticResource BorderDarkBrush}" />
+
+              <TextBlock Text="Why it looks unusual (heuristic)"
+                         Foreground="{StaticResource AccentBrush}"
+                         FontWeight="Bold"
+                         FontSize="13"/>
+
+              <ItemsControl ItemsSource="{Binding SelectedReasons}">
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate>
+                    <TextBlock Text="{Binding}"
+                               Foreground="{StaticResource TextPrimaryBrush}"
+                               FontSize="12"
+                               TextWrapping="Wrap"/>
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
+            </StackPanel>
+          </ScrollViewer>
+        </Border>
+
+      </Grid>
+
+      <!-- Related Logs -->
+      <Border Grid.Row="3" IsVisible="False"
+              Classes="page-card"
+              BorderBrush="{StaticResource BorderDarkBrush}"
+              BorderThickness="1">
+        <Grid RowDefinitions="Auto,*" RowSpacing="10">
+          <TextBlock Text="Related Logs (selected row)"
+                     FontSize="14"
+                     FontWeight="Bold"
+                     Foreground="{StaticResource TextPrimaryBrush}"/>
+
+          <DataGrid Grid.Row="1"
+                    Classes="modern-grid"
+                    ItemsSource="{Binding SelectedEvents}"
+                    AutoGenerateColumns="False"
+                    IsReadOnly="True">
+
+            <DataGrid.Columns>
+
+              <DataGridTemplateColumn Header="Time" Width="170">
+                <DataGridTemplateColumn.CellTemplate>
+                  <DataTemplate>
+                    <TextBlock Text="{Binding Time}" MaxLines="2" TextWrapping="Wrap"/>
+                  </DataTemplate>
+                </DataGridTemplateColumn.CellTemplate>
+              </DataGridTemplateColumn>
+
+              <DataGridTemplateColumn Header="Type" Width="120">
+                <DataGridTemplateColumn.CellTemplate>
+                  <DataTemplate>
+                    <TextBlock Text="{Binding Type}" MaxLines="2" TextWrapping="Wrap"/>
+                  </DataTemplate>
+                </DataGridTemplateColumn.CellTemplate>
+              </DataGridTemplateColumn>
+
+              <DataGridTemplateColumn Header="Severity" Width="120">
+                <DataGridTemplateColumn.CellTemplate>
+                  <DataTemplate>
+                    <TextBlock Text="{Binding Severity}" MaxLines="2" TextWrapping="Wrap"/>
+                  </DataTemplate>
+                </DataGridTemplateColumn.CellTemplate>
+              </DataGridTemplateColumn>
+
+              <DataGridTemplateColumn Header="Process" Width="200">
+                <DataGridTemplateColumn.CellTemplate>
+                  <DataTemplate>
+                    <TextBlock Text="{Binding Process}"
+                               MaxLines="2"
+                               TextWrapping="Wrap"
+                               TextTrimming="CharacterEllipsis"/>
+                  </DataTemplate>
+                </DataGridTemplateColumn.CellTemplate>
+              </DataGridTemplateColumn>
+
+              <!-- Details preview + View -->
+              <DataGridTemplateColumn Header="Details" Width="3*">
+                <DataGridTemplateColumn.CellTemplate>
+                  <DataTemplate>
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                      <TextBlock Grid.Column="0"
+                                 Text="{Binding Details}"
+                                 MaxLines="2"
+                                 TextWrapping="Wrap"
+                                 TextTrimming="CharacterEllipsis"/>
+                      <Button Grid.Column="1"
+                              Classes="pill"
+                              Padding="10,4"
+                              Content="View"
+                              Click="ViewEventDetails_Click"/>
+                    </Grid>
+                  </DataTemplate>
+                </DataGridTemplateColumn.CellTemplate>
+              </DataGridTemplateColumn>
+
+            </DataGrid.Columns>
+          </DataGrid>
+        </Grid>
+      </Border>
+
+    </Grid>
+  </ScrollViewer>
+
+</UserControl>

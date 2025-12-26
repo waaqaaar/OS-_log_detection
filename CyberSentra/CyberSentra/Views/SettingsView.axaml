@@ -1,0 +1,106 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             d:DesignWidth="800"
+             d:DesignHeight="450"
+             x:Class="CyberSentra.SettingsView">
+
+    <ScrollViewer>
+        <StackPanel Margin="0,0,0,16" Spacing="24">
+
+            <TextBlock Text="Settings"
+                       HorizontalAlignment="Center"
+                       Foreground="{StaticResource AccentBrush}"
+                       FontSize="30"
+                       FontWeight="Bold"/>
+
+            <!-- Log Sources -->
+            <Border Classes="dashboard-card"
+                    BorderBrush="{StaticResource BorderDarkBrush}"
+                    BorderThickness="1">
+                <StackPanel Margin="16" Spacing="8">
+                    <TextBlock Text="Log Sources"
+                               Foreground="{StaticResource AccentBrush}"
+                               FontSize="18"
+                               FontWeight="Bold"/>
+
+                    <CheckBox Content="Collect Windows Event Logs"
+                              IsChecked="True"/>
+                    <CheckBox Content="Collect Sysmon Logs"
+                              IsChecked="True"/>
+                    <CheckBox Content="Collect Linux Audit Logs"
+                              IsChecked="False"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Anomaly Threshold -->
+            <Border Classes="dashboard-card"
+                    BorderBrush="{StaticResource BorderDarkBrush}"
+                    BorderThickness="1">
+                <StackPanel Margin="16" Spacing="8">
+                    <TextBlock Text="Anomaly Threshold"
+                               Foreground="{StaticResource AccentBrush}"
+                               FontSize="18"
+                               FontWeight="Bold"/>
+
+                    <TextBlock Text="Global anomaly sensitivity (0 = very noisy, 100 = very strict)"
+                               Foreground="{StaticResource TextSecondaryBrush}"
+                               FontSize="12"/>
+
+                    <Slider Minimum="0"
+                            Maximum="100"
+                            Value="75"/>
+
+                    <TextBlock Text="Current: 75"
+                               Foreground="{StaticResource TextPrimaryBrush}"
+                               FontSize="14"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Active Directory Connection -->
+            <Border Classes="dashboard-card"
+                    BorderBrush="{StaticResource BorderDarkBrush}"
+                    BorderThickness="1">
+                <StackPanel Margin="16" Spacing="8">
+                    <TextBlock Text="Active Directory Connection"
+                               Foreground="{StaticResource AccentBrush}"
+                               FontSize="18"
+                               FontWeight="Bold"/>
+
+                    <TextBlock Text="Basic connection parameters (stub only for Phase 1)"
+                               Foreground="{StaticResource TextSecondaryBrush}"
+                               FontSize="12"/>
+
+                    <TextBlock Text="Domain / LDAP URL"
+                               Foreground="{StaticResource TextSecondaryBrush}"
+                               Margin="0,8,0,0"/>
+                    <TextBox Text="ldap://corp.local"/>
+
+                    <TextBlock Text="Username"
+                               Foreground="{StaticResource TextSecondaryBrush}"
+                               Margin="0,8,0,0"/>
+                    <TextBox Text="CORP\\cybersentra"/>
+
+                    <TextBlock Text="Password"
+                               Foreground="{StaticResource TextSecondaryBrush}"
+                               Margin="0,8,0,0"/>
+                    <TextBox PasswordChar="●"
+                             Text="password"/>
+
+                    <Button Content="Test Connection"
+                            HorizontalAlignment="Right"
+                            Margin="0,12,0,0"
+                            Padding="14,6"
+                            Background="{StaticResource AccentSoftBrush}"
+                            Foreground="{StaticResource SidebarBackground}"
+                            BorderBrush="{StaticResource AccentSoftBrush}"
+                            BorderThickness="1"
+                            CornerRadius="16"/>
+                </StackPanel>
+            </Border>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

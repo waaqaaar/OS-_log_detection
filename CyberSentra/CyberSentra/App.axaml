@@ -1,0 +1,55 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="CyberSentra.App"
+             RequestedThemeVariant="Dark">
+             <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
+
+ <!-- STYLES -->
+    <Application.Styles>
+        <FluentTheme />
+        <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml"/>
+    </Application.Styles>
+
+
+    <!-- RESOURCES -->
+    <Application.Resources>
+        <ResourceDictionary>
+
+            <!-- Colors -->
+            <Color x:Key="Color.SidebarBackground">#050818</Color>
+            <Color x:Key="Color.MainBackground">#070C22</Color>
+            <Color x:Key="Color.CardBackground">#0C1026</Color>
+            <Color x:Key="Color.Accent">#00FFA3</Color>
+            <Color x:Key="Color.AccentSoft">#1ED1A8</Color>
+            <Color x:Key="Color.TextPrimary">#E9F4FF</Color>
+            <Color x:Key="Color.TextSecondary">#7B8BAA</Color>
+            <Color x:Key="Color.BorderDark">#161C3A</Color>
+
+            <!-- Brushes -->
+            <SolidColorBrush x:Key="SidebarBackground" Color="{StaticResource Color.SidebarBackground}"/>
+            <SolidColorBrush x:Key="MainBackground" Color="{StaticResource Color.MainBackground}"/>
+            <SolidColorBrush x:Key="CardBackground" Color="{StaticResource Color.CardBackground}"/>
+            <SolidColorBrush x:Key="AccentBrush" Color="{StaticResource Color.Accent}"/>
+            <SolidColorBrush x:Key="AccentSoftBrush" Color="{StaticResource Color.AccentSoft}"/>
+            <SolidColorBrush x:Key="TextPrimaryBrush" Color="{StaticResource Color.TextPrimary}"/>
+            <SolidColorBrush x:Key="TextSecondaryBrush" Color="{StaticResource Color.TextSecondary}"/>
+            <SolidColorBrush x:Key="BorderDarkBrush" Color="{StaticResource Color.BorderDark}"/>
+
+            <!-- Card style -->
+            <Style x:Key="DashboardCardStyle" Selector="Border.dashboard-card">
+                <Setter Property="Background" Value="{StaticResource CardBackground}"/>
+                <Setter Property="CornerRadius" Value="24"/>
+                <Setter Property="Padding" Value="24"/>
+                <Setter Property="BoxShadow">
+                    <BoxShadows>
+                        Color="#80000000"
+                                   Blur="24"
+                                   OffsetX="0"
+                                   OffsetY="4"/>
+                    </BoxShadows>
+                </Setter>
+            </Style>
+
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

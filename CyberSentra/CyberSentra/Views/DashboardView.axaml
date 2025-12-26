@@ -1,0 +1,490 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             d:DesignWidth="1800"
+             d:DesignHeight="1050"
+             xmlns:local="clr-namespace:CyberSentra"
+             x:DataType="local:DashboardView"
+             x:Class="CyberSentra.DashboardView">
+
+    <!-- Local styles ONLY for this view -->
+    <UserControl.Styles>
+
+        <!-- Card baseline (keeps your dashboard-card class but makes it consistent here) -->
+        <Style Selector="Border.dashboard-card">
+            <Setter Property="CornerRadius" Value="16"/>
+            <Setter Property="Padding" Value="14"/>
+            <Setter Property="Background" Value="#0F1726"/>
+        </Style>
+
+        <!-- Pill ToggleButtons -->
+        <Style Selector="ToggleButton.pill">
+            <Setter Property="Padding" Value="12,6"/>
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderDarkBrush}"/>
+            <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
+            <Setter Property="FontSize" Value="12"/>
+        </Style>
+        <Style Selector="ToggleButton.pill:pointerover">
+            <Setter Property="Background" Value="#16223A"/>
+            <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+        </Style>
+        <Style Selector="ToggleButton.pill:checked">
+            <Setter Property="Background" Value="#1A233B"/>
+            <Setter Property="BorderBrush" Value="{StaticResource AccentBrush}"/>
+            <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+        </Style>
+
+        <!-- Outline button -->
+        <Style Selector="Button.btn-outline">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="{StaticResource AccentBrush}"/>
+            <Setter Property="Foreground" Value="{StaticResource AccentBrush}"/>
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="Padding" Value="12,6"/>
+        </Style>
+        <Style Selector="Button.btn-outline:pointerover">
+            <Setter Property="Background" Value="#13203A"/>
+        </Style>
+        <Style Selector="Button.btn-outline:pressed">
+            <Setter Property="Background" Value="#1A233B"/>
+        </Style>
+
+        <!-- List row look -->
+        <Style Selector="Border.list-row">
+            <Setter Property="Background" Value="#0B1324"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderDarkBrush}"/>
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="Padding" Value="10,8"/>
+        </Style>
+
+        <!-- DataGrid polish -->
+        <Style Selector="DataGrid.modern-grid">
+            <Setter Property="RowHeight" Value="38"/>
+            <Setter Property="ColumnHeaderHeight" Value="42"/>
+            <Setter Property="GridLinesVisibility" Value="None"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Background" Value="Transparent"/>
+        </Style>
+
+        <!-- Header cells -->
+        <Style Selector="DataGrid.modern-grid DataGridColumnHeader">
+            <Setter Property="Background" Value="#0B1324"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderDarkBrush}"/>
+            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+            <Setter Property="Padding" Value="10,10"/>
+            <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+
+        <!-- Rows -->
+        <Style Selector="DataGrid.modern-grid DataGridRow">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderDarkBrush}"/>
+            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+        </Style>
+        <Style Selector="DataGrid.modern-grid DataGridRow:pointerover">
+            <Setter Property="Background" Value="#0B1324"/>
+        </Style>
+
+        <!-- Cells -->
+        <Style Selector="DataGrid.modern-grid DataGridCell">
+            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style>
+
+    </UserControl.Styles>
+    <ScrollViewer VerticalScrollBarVisibility="Auto"
+              HorizontalScrollBarVisibility="Disabled">
+    <Grid RowDefinitions="Auto,Auto,Auto,*"
+          RowSpacing="14">
+
+        <!-- ====== TOP INFO BAR ====== -->
+        <Border Grid.Row="0"
+                Classes="dashboard-card"
+                BorderBrush="{StaticResource BorderDarkBrush}"
+                BorderThickness="1">
+            <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="18">
+
+                <StackPanel Spacing="2">
+                    <TextBlock Text="Platform"
+                               Foreground="{StaticResource TextSecondaryBrush}"
+                               FontSize="12"/>
+                    <TextBlock Text="{Binding PlatformName}"
+                               Foreground="{StaticResource TextPrimaryBrush}"
+                               FontSize="14"
+                               FontWeight="SemiBold"/>
+                </StackPanel>
+
+                <Border Grid.Column="1"
+                        Background="#141F36"
+                        BorderBrush="{StaticResource BorderDarkBrush}"
+                        BorderThickness="1"
+                        CornerRadius="12"
+                        Padding="10,6"
+                        VerticalAlignment="Center">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <TextBlock Text="Status"
+                                   Foreground="{StaticResource TextSecondaryBrush}"
+                                   FontSize="12"/>
+                        <TextBlock Text="{Binding AppStatus}"
+                                   Foreground="{StaticResource AccentBrush}"
+                                   FontSize="13"
+                                   FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+
+                <StackPanel Grid.Column="2" Spacing="2" VerticalAlignment="Center">
+                    <TextBlock Text="Last Log Update"
+                               Foreground="{StaticResource TextSecondaryBrush}"
+                               FontSize="12"/>
+                    <TextBlock Text="{Binding LastLogUpdateText}"
+                               Foreground="{StaticResource TextPrimaryBrush}"
+                               FontSize="13"/>
+                </StackPanel>
+
+            </Grid>
+        </Border>
+
+        <!-- ====== TIME FILTER BAR ====== -->
+        <Border Grid.Row="1"
+                Background="#0F1726"
+                BorderBrush="{StaticResource BorderDarkBrush}"
+                BorderThickness="1"
+                CornerRadius="16"
+                Padding="12">
+            <Grid ColumnDefinitions="Auto,Auto,Auto,Auto"
+                  ColumnSpacing="8"
+                  HorizontalAlignment="Left">
+                <TextBlock Text="Time range"
+                           VerticalAlignment="Center"
+                           Foreground="{StaticResource TextSecondaryBrush}"
+                           FontSize="12"
+                           Margin="4,0,10,0"/>
+
+                <ToggleButton x:Name="AllTimeButton"
+                              Grid.Column="1"
+                              Classes="pill"
+                              Content="All"
+                              IsChecked="True"
+                              Click="TimeFilterButton_Click"/>
+
+                <ToggleButton x:Name="Last24hButton"
+                              Grid.Column="2"
+                              Classes="pill"
+                              Content="Last 24h"
+                              Click="TimeFilterButton_Click"/>
+
+                <ToggleButton x:Name="Last1hButton"
+                              Grid.Column="3"
+                              Classes="pill"
+                              Content="Last 1h"
+                              Click="TimeFilterButton_Click"/>
+            </Grid>
+        </Border>
+
+        <!-- ====== TOP SECTION ====== -->
+        <Grid Grid.Row="2" ColumnSpacing="14">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Security Index card -->
+            <Border Grid.Column="0"
+                    Classes="dashboard-card"
+                    BorderBrush="{StaticResource BorderDarkBrush}"
+                    BorderThickness="1">
+                <Grid RowDefinitions="Auto,*,Auto" RowSpacing="10">
+
+                    <Grid Grid.Row="0" ColumnDefinitions="*,Auto">
+                        <StackPanel Spacing="2">
+                            <TextBlock Text="Security Index"
+                                       Foreground="{StaticResource TextPrimaryBrush}"
+                                       FontSize="16"
+                                       FontWeight="Bold"/>
+                            <TextBlock Text="Overall posture score"
+                                       Foreground="{StaticResource TextSecondaryBrush}"
+                                       FontSize="12"/>
+                        </StackPanel>
+
+                        <Border Grid.Column="1"
+                                Background="#0F1A30"
+                                BorderBrush="{StaticResource BorderDarkBrush}"
+                                BorderThickness="1"
+                                CornerRadius="12"
+                                Padding="10,6"
+                                VerticalAlignment="Center">
+                            <TextBlock Text="Live"
+                                       Foreground="{StaticResource AccentBrush}"
+                                       FontWeight="Bold"
+                                       FontSize="12"/>
+                        </Border>
+                    </Grid>
+
+                    <!-- Circular index -->
+                    <Grid Grid.Row="1"
+                          HorizontalAlignment="Center"
+                          VerticalAlignment="Center">
+                        <Grid>
+                            <Border Width="260" Height="260"
+                                    CornerRadius="130"
+                                    BorderThickness="18"
+                                    BorderBrush="{StaticResource AccentSoftBrush}"
+                                    Background="#07101F"/>
+                            <Border Width="196" Height="196"
+                                    CornerRadius="98"
+                                    Background="{StaticResource MainBackground}"
+                                    BorderBrush="{StaticResource BorderDarkBrush}"
+                                    BorderThickness="1">
+                                <Grid>
+                                    <StackPanel HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Spacing="2">
+                                        <TextBlock Text="{Binding SecurityIndexText}"
+                                                   Foreground="{StaticResource AccentBrush}"
+                                                   FontSize="56"
+                                                   FontWeight="Bold"
+                                                   HorizontalAlignment="Center"/>
+                                        <TextBlock Text="Index"
+                                                   Foreground="{StaticResource TextSecondaryBrush}"
+                                                   FontSize="12"
+                                                   HorizontalAlignment="Center"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </Grid>
+                    </Grid>
+
+                    <TextBlock Grid.Row="2"
+                               Text="Higher is better • Based on events, anomalies, threats"
+                               Foreground="{StaticResource TextSecondaryBrush}"
+                               FontSize="12"
+                               HorizontalAlignment="Center"/>
+                </Grid>
+            </Border>
+
+            <!-- Right side -->
+            <StackPanel Grid.Column="1" Spacing="14">
+
+                <!-- Metrics card -->
+                <Border Classes="dashboard-card"
+                        BorderBrush="{StaticResource BorderDarkBrush}"
+                        BorderThickness="1">
+                    <Grid RowDefinitions="Auto,Auto" RowSpacing="12">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <TextBlock Text="Metrics"
+                                       Foreground="{StaticResource TextPrimaryBrush}"
+                                       FontWeight="Bold"
+                                       FontSize="16"/>
+                            <TextBlock Text="(current filter)"
+                                       Grid.Column="1"
+                                       Foreground="{StaticResource TextSecondaryBrush}"
+                                       FontSize="11"
+                                       VerticalAlignment="Center"/>
+                        </Grid>
+
+                        <Grid Grid.Row="1" ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                            <StackPanel Spacing="10">
+                                <TextBlock Text="Events" Foreground="{StaticResource TextSecondaryBrush}"/>
+                                <TextBlock Text="Anomalies" Foreground="{StaticResource TextSecondaryBrush}"/>
+                                <TextBlock Text="Threats" Foreground="{StaticResource TextSecondaryBrush}"/>
+                                <TextBlock Text="Failed Logins" Foreground="{StaticResource TextSecondaryBrush}"/>
+                                <TextBlock Text="ML Anomalies" Foreground="{StaticResource TextSecondaryBrush}"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="1" Spacing="10" HorizontalAlignment="Right">
+                                <TextBlock Text="{Binding TotalEvents}" Foreground="{StaticResource AccentBrush}" FontWeight="SemiBold"/>
+                                <TextBlock Text="{Binding AnomalyCount}" Foreground="{StaticResource AccentBrush}" FontWeight="SemiBold"/>
+                                <TextBlock Text="{Binding ThreatCount}" Foreground="{StaticResource AccentBrush}" FontWeight="SemiBold"/>
+                                <TextBlock Text="{Binding FailedLoginCount}" Foreground="{StaticResource AccentBrush}" FontWeight="SemiBold"/>
+                                <TextBlock Text="{Binding MlAnomalyCount}" Foreground="{StaticResource AccentBrush}" FontWeight="SemiBold"/>
+                            </StackPanel>
+                        </Grid>
+                    </Grid>
+                </Border>
+
+                <!-- Top Anomalous Users -->
+                <Border Classes="dashboard-card"
+                        BorderBrush="{StaticResource BorderDarkBrush}"
+                        BorderThickness="1">
+                    <Grid RowDefinitions="Auto,*" RowSpacing="10">
+                        <TextBlock Text="Top Anomalous Users"
+                                   Foreground="{StaticResource TextPrimaryBrush}"
+                                   FontWeight="Bold"
+                                   FontSize="16"/>
+
+                        <ItemsControl Grid.Row="1" ItemsSource="{Binding TopAnomalousUsers}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="x:String">
+                                    <Border Classes="list-row" Margin="0,0,0,8">
+                                        <TextBlock Text="{Binding}"
+                                                   Foreground="{StaticResource TextPrimaryBrush}"
+                                                   FontSize="13"
+                                                   TextTrimming="CharacterEllipsis"/>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Grid>
+                </Border>
+
+                <!-- Top MITRE Techniques -->
+                <Border Classes="dashboard-card"
+                        BorderBrush="{StaticResource BorderDarkBrush}"
+                        BorderThickness="1">
+                    <Grid RowDefinitions="Auto,*" RowSpacing="10">
+                        <TextBlock Text="Top MITRE Techniques"
+                                   Foreground="{StaticResource TextPrimaryBrush}"
+                                   FontWeight="Bold"
+                                   FontSize="16"/>
+
+                        <ItemsControl Grid.Row="1" ItemsSource="{Binding TopTechniques}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Classes="list-row" Margin="0,0,0,8">
+                                        <TextBlock Text="{Binding}"
+                                                   Foreground="{StaticResource TextPrimaryBrush}"
+                                                   FontSize="13"
+                                                   TextTrimming="CharacterEllipsis"/>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Grid>
+                </Border>
+
+            </StackPanel>
+        </Grid>
+
+        <!-- ====== BOTTOM: Recent Anomalies ====== -->
+   <!-- ====== BOTTOM: Recent Anomalies ====== -->
+<Border Grid.Row="3"
+        Classes="dashboard-card"
+        BorderBrush="{StaticResource BorderDarkBrush}"
+        BorderThickness="1"
+        MinHeight="320">
+    <Grid RowDefinitions="Auto,*" RowSpacing="10">
+
+        <Grid Grid.Row="0" ColumnDefinitions="*,Auto">
+            <StackPanel Spacing="2">
+                <TextBlock Text="Recent Anomalies"
+                           Foreground="{StaticResource TextPrimaryBrush}"
+                           FontWeight="Bold"
+                           FontSize="16"/>
+                <TextBlock Text="Latest suspicious / failed / warning events"
+                           Foreground="{StaticResource TextSecondaryBrush}"
+                           FontSize="12"/>
+            </StackPanel>
+
+            <Button Grid.Column="1"
+                    Classes="btn-outline"
+                    Content="Refresh"
+                    Click="RefreshButton_Click"/>
+        </Grid>
+
+        <DataGrid Grid.Row="1"
+                  Classes="modern-grid"
+                  VerticalAlignment="Stretch"
+                  HorizontalAlignment="Stretch"
+                  MinHeight="240"
+                  Background="Transparent"
+                  BorderThickness="0"
+                  IsReadOnly="True"
+                  HeadersVisibility="Column"
+                  AutoGenerateColumns="False"
+                  CanUserReorderColumns="False"
+                  CanUserResizeColumns="True"
+                  CanUserSortColumns="False"
+                  Foreground="{StaticResource TextPrimaryBrush}"
+                  ItemsSource="{Binding RecentAnomalies}"
+                     RowHeight="NaN"
+          HorizontalScrollBarVisibility="Auto"
+          VerticalScrollBarVisibility="Auto">
+          <DataGrid.Columns>
+
+  <DataGridTemplateColumn Header="Time" Width="170">
+    <DataGridTemplateColumn.CellTemplate>
+      <DataTemplate>
+        <TextBlock Text="{Binding Time}"
+                   TextWrapping="Wrap"
+                   MaxLines="2"
+                   Foreground="{StaticResource TextPrimaryBrush}"/>
+      </DataTemplate>
+    </DataGridTemplateColumn.CellTemplate>
+  </DataGridTemplateColumn>
+
+  <DataGridTemplateColumn Header="Type" Width="140">
+    <DataGridTemplateColumn.CellTemplate>
+      <DataTemplate>
+        <TextBlock Text="{Binding Type}"
+                   TextWrapping="Wrap"
+                   MaxLines="2"
+                   Foreground="{StaticResource TextPrimaryBrush}"/>
+      </DataTemplate>
+    </DataGridTemplateColumn.CellTemplate>
+  </DataGridTemplateColumn>
+
+  <DataGridTemplateColumn Header="Severity" Width="110">
+    <DataGridTemplateColumn.CellTemplate>
+      <DataTemplate>
+        <TextBlock Text="{Binding Severity}"
+                   TextWrapping="Wrap"
+                   MaxLines="2"
+                   Foreground="{StaticResource TextPrimaryBrush}"/>
+      </DataTemplate>
+    </DataGridTemplateColumn.CellTemplate>
+  </DataGridTemplateColumn>
+
+  <DataGridTemplateColumn Header="Score" Width="90">
+    <DataGridTemplateColumn.CellTemplate>
+      <DataTemplate>
+        <TextBlock Text="{Binding Score}"
+                   Foreground="{StaticResource AccentBrush}"
+                   FontWeight="SemiBold"/>
+      </DataTemplate>
+    </DataGridTemplateColumn.CellTemplate>
+  </DataGridTemplateColumn>
+
+  <DataGridTemplateColumn Header="User" Width="160">
+    <DataGridTemplateColumn.CellTemplate>
+      <DataTemplate>
+        <TextBlock Text="{Binding User}"
+                   TextWrapping="Wrap"
+                   MaxLines="2"
+                   Foreground="{StaticResource TextPrimaryBrush}"/>
+      </DataTemplate>
+    </DataGridTemplateColumn.CellTemplate>
+  </DataGridTemplateColumn>
+
+  <!-- Long column: wraps and uses remaining space -->
+  <DataGridTemplateColumn Header="Description" Width="3*">
+    <DataGridTemplateColumn.CellTemplate>
+      <DataTemplate>
+        <TextBlock Text="{Binding Description}"
+                   TextWrapping="Wrap"
+                   TextTrimming="None"
+                   MaxLines="4"
+                   Foreground="{StaticResource TextPrimaryBrush}"/>
+      </DataTemplate>
+    </DataGridTemplateColumn.CellTemplate>
+  </DataGridTemplateColumn>
+
+</DataGrid.Columns>
+
+        </DataGrid>
+
+    </Grid>
+</Border>
+
+
+    </Grid>
+        </ScrollViewer>
+</UserControl>

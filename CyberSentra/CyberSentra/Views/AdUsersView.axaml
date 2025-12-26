@@ -1,0 +1,269 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             d:DesignWidth="900"
+             d:DesignHeight="520"
+             x:Class="CyberSentra.AdUsersView"
+             x:CompileBindings="False">
+
+  <UserControl.Styles>
+
+    <Style Selector="Border.page-card">
+      <Setter Property="CornerRadius" Value="16"/>
+      <Setter Property="Padding" Value="14"/>
+      <Setter Property="Background" Value="#0F1726"/>
+    </Style>
+
+    <Style Selector="TextBox.field">
+      <Setter Property="Padding" Value="10,6"/>
+      <Setter Property="CornerRadius" Value="12"/>
+      <Setter Property="BorderThickness" Value="1"/>
+      <Setter Property="BorderBrush" Value="{StaticResource BorderDarkBrush}"/>
+      <Setter Property="Background" Value="#0B1324"/>
+      <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+      <Setter Property="Height" Value="36"/>
+    </Style>
+
+    <Style Selector="Button.pill">
+      <Setter Property="Padding" Value="12,6"/>
+      <Setter Property="CornerRadius" Value="12"/>
+      <Setter Property="BorderThickness" Value="1"/>
+      <Setter Property="BorderBrush" Value="{StaticResource BorderDarkBrush}"/>
+      <Setter Property="Background" Value="Transparent"/>
+      <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
+      <Setter Property="FontSize" Value="12"/>
+      <Setter Property="Height" Value="36"/>
+    </Style>
+    <Style Selector="Button.pill:pointerover">
+      <Setter Property="Background" Value="#16223A"/>
+      <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+    </Style>
+
+    <Style Selector="Button.pill.soft">
+      <Setter Property="Background" Value="{StaticResource AccentSoftBrush}"/>
+      <Setter Property="BorderBrush" Value="{StaticResource AccentSoftBrush}"/>
+      <Setter Property="Foreground" Value="{StaticResource SidebarBackground}"/>
+    </Style>
+
+    <Style Selector="DataGrid.modern-grid">
+      <Setter Property="RowHeight" Value="NaN"/>
+      <Setter Property="ColumnHeaderHeight" Value="42"/>
+      <Setter Property="GridLinesVisibility" Value="None"/>
+      <Setter Property="BorderThickness" Value="0"/>
+      <Setter Property="Background" Value="Transparent"/>
+      <Setter Property="HorizontalScrollBarVisibility" Value="Auto"/>
+      <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
+    </Style>
+
+    <Style Selector="DataGrid.modern-grid DataGridColumnHeader">
+      <Setter Property="Background" Value="#0B1324"/>
+      <Setter Property="BorderBrush" Value="{StaticResource BorderDarkBrush}"/>
+      <Setter Property="BorderThickness" Value="0,0,0,1"/>
+      <Setter Property="Padding" Value="10,10"/>
+      <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
+      <Setter Property="FontSize" Value="12"/>
+      <Setter Property="FontWeight" Value="SemiBold"/>
+    </Style>
+
+    <Style Selector="DataGrid.modern-grid DataGridRow:pointerover">
+      <Setter Property="Background" Value="#0B1324"/>
+    </Style>
+
+    <Style Selector="DataGrid.modern-grid DataGridCell">
+      <Setter Property="Padding" Value="10,8"/>
+      <Setter Property="BorderThickness" Value="0"/>
+    </Style>
+
+  </UserControl.Styles>
+
+  <Grid RowDefinitions="Auto,2*,Auto" RowSpacing="12">
+
+    <!-- Header / toolbar -->
+    <Grid Grid.Row="0" ColumnDefinitions="*,Auto" ColumnSpacing="12" VerticalAlignment="Center">
+      <StackPanel Spacing="2">
+        <TextBlock Text="AD Users"
+                   Foreground="{StaticResource TextPrimaryBrush}"
+                   FontSize="18"
+                   FontWeight="Bold"/>
+        <TextBlock Text="User risk overview and recent activity"
+                   Foreground="{StaticResource TextSecondaryBrush}"
+                   FontSize="12"/>
+      </StackPanel>
+
+      <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+        <TextBox x:Name="SearchBox"
+                 Classes="field"
+                 Width="260"
+                 Watermark="Search username, email, domain..."
+                 TextChanged="SearchBox_TextChanged"/>
+
+        <Button Classes="pill soft" Content="Filter" IsEnabled="False"/>
+      </StackPanel>
+    </Grid>
+
+    <!-- Users grid card -->
+    <Border Grid.Row="1"
+            Classes="page-card"
+            BorderBrush="{StaticResource BorderDarkBrush}"
+            BorderThickness="1">
+
+      <DataGrid x:Name="UsersGrid"
+                Classes="modern-grid"
+                IsReadOnly="True"
+                HeadersVisibility="Column"
+                AutoGenerateColumns="False"
+                CanUserReorderColumns="False"
+                CanUserResizeColumns="True"
+                CanUserSortColumns="False"
+                Foreground="{StaticResource TextPrimaryBrush}"
+                ItemsSource="{Binding Users}"
+                SelectionChanged="UsersGrid_SelectionChanged">
+
+        <DataGrid.Columns>
+
+          <DataGridTemplateColumn Header="User" Width="170">
+            <DataGridTemplateColumn.CellTemplate>
+              <DataTemplate>
+                <TextBlock Text="{Binding UserName}" FontWeight="SemiBold"/>
+              </DataTemplate>
+            </DataGridTemplateColumn.CellTemplate>
+          </DataGridTemplateColumn>
+
+          <DataGridTemplateColumn Header="Domain" Width="150">
+            <DataGridTemplateColumn.CellTemplate>
+              <DataTemplate>
+                <TextBlock Text="{Binding Domain}" MaxLines="1" TextTrimming="CharacterEllipsis"/>
+              </DataTemplate>
+            </DataGridTemplateColumn.CellTemplate>
+          </DataGridTemplateColumn>
+
+          <DataGridTemplateColumn Header="Display Name" Width="220">
+            <DataGridTemplateColumn.CellTemplate>
+              <DataTemplate>
+                <TextBlock Text="{Binding DisplayName}" MaxLines="1" TextTrimming="CharacterEllipsis"/>
+              </DataTemplate>
+            </DataGridTemplateColumn.CellTemplate>
+          </DataGridTemplateColumn>
+
+          <DataGridTemplateColumn Header="Email" Width="240">
+            <DataGridTemplateColumn.CellTemplate>
+              <DataTemplate>
+                <TextBlock Text="{Binding Email}" MaxLines="1" TextTrimming="CharacterEllipsis"/>
+              </DataTemplate>
+            </DataGridTemplateColumn.CellTemplate>
+          </DataGridTemplateColumn>
+
+          <DataGridTemplateColumn Header="Risk" Width="90">
+            <DataGridTemplateColumn.CellTemplate>
+              <DataTemplate>
+                <TextBlock Text="{Binding RiskScore}"
+                           Foreground="{StaticResource AccentBrush}"
+                           FontWeight="SemiBold"/>
+              </DataTemplate>
+            </DataGridTemplateColumn.CellTemplate>
+          </DataGridTemplateColumn>
+
+          <DataGridTemplateColumn Header="Anomalies" Width="110">
+            <DataGridTemplateColumn.CellTemplate>
+              <DataTemplate>
+                <TextBlock Text="{Binding Anomalies}"
+                           Foreground="{StaticResource TextSecondaryBrush}"/>
+              </DataTemplate>
+            </DataGridTemplateColumn.CellTemplate>
+          </DataGridTemplateColumn>
+
+        </DataGrid.Columns>
+      </DataGrid>
+    </Border>
+
+    <!-- Selected user events -->
+    <Border Grid.Row="2"
+              Height="260"
+            Classes="page-card"
+            BorderBrush="{StaticResource BorderDarkBrush}"
+            BorderThickness="1">
+
+      <Grid RowDefinitions="Auto,*" RowSpacing="10">
+        <TextBlock Text="Recent events for selected user"
+                   Foreground="{StaticResource TextSecondaryBrush}"
+                   FontSize="12"
+                   FontWeight="SemiBold"/>
+
+        <DataGrid Grid.Row="1"
+                  Classes="modern-grid"
+                  IsReadOnly="True"
+                  HeadersVisibility="Column"
+                  AutoGenerateColumns="False"
+                  CanUserReorderColumns="False"
+                  CanUserResizeColumns="True"
+                  CanUserSortColumns="False"
+                  Foreground="{StaticResource TextPrimaryBrush}"
+                  ItemsSource="{Binding SelectedUserEvents}">
+
+          <DataGrid.Columns>
+
+            <DataGridTemplateColumn Header="Time" Width="170">
+              <DataGridTemplateColumn.CellTemplate>
+                <DataTemplate>
+                  <TextBlock Text="{Binding Time}" MaxLines="2" TextWrapping="Wrap"/>
+                </DataTemplate>
+              </DataGridTemplateColumn.CellTemplate>
+            </DataGridTemplateColumn>
+
+            <DataGridTemplateColumn Header="Type" Width="140">
+              <DataGridTemplateColumn.CellTemplate>
+                <DataTemplate>
+                  <TextBlock Text="{Binding Type}" MaxLines="2" TextWrapping="Wrap"/>
+                </DataTemplate>
+              </DataGridTemplateColumn.CellTemplate>
+            </DataGridTemplateColumn>
+
+            <DataGridTemplateColumn Header="Severity" Width="120">
+              <DataGridTemplateColumn.CellTemplate>
+                <DataTemplate>
+                  <TextBlock Text="{Binding Severity}" MaxLines="2" TextWrapping="Wrap"/>
+                </DataTemplate>
+              </DataGridTemplateColumn.CellTemplate>
+            </DataGridTemplateColumn>
+
+            <DataGridTemplateColumn Header="Process" Width="200">
+              <DataGridTemplateColumn.CellTemplate>
+                <DataTemplate>
+                  <TextBlock Text="{Binding Process}"
+                             MaxLines="1"
+                             TextTrimming="CharacterEllipsis"/>
+                </DataTemplate>
+              </DataGridTemplateColumn.CellTemplate>
+            </DataGridTemplateColumn>
+
+            <!-- Details preview + View -->
+            <DataGridTemplateColumn Header="Details" Width="3*">
+              <DataGridTemplateColumn.CellTemplate>
+                <DataTemplate>
+                  <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                    <TextBlock Grid.Column="0"
+                               Text="{Binding Details}"
+                               MaxLines="2"
+                               TextWrapping="Wrap"
+                               TextTrimming="CharacterEllipsis"/>
+                    <Button Grid.Column="1"
+                            Classes="pill"
+                            Height="28"
+                            Padding="10,4"
+                            Content="View"
+                            Click="ViewUserEventDetails_Click"/>
+                  </Grid>
+                </DataTemplate>
+              </DataGridTemplateColumn.CellTemplate>
+            </DataGridTemplateColumn>
+
+          </DataGrid.Columns>
+        </DataGrid>
+
+      </Grid>
+    </Border>
+
+  </Grid>
+</UserControl>

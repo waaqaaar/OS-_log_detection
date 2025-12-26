@@ -1,0 +1,217 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.Avalonia;assembly=LiveChartsCore.SkiaSharpView.Avalonia"
+             mc:Ignorable="d"
+             d:DesignWidth="900" d:DesignHeight="800"
+             x:CompileBindings="False"
+             x:Class="CyberSentra.MlAnomalyHistoryView">
+
+  <UserControl.Styles>
+
+    <Style Selector="Border.page-card">
+      <Setter Property="CornerRadius" Value="16"/>
+      <Setter Property="Padding" Value="14"/>
+      <Setter Property="Background" Value="#0F1726"/>
+    </Style>
+
+    <Style Selector="TextBox.field">
+      <Setter Property="Padding" Value="10,6"/>
+      <Setter Property="CornerRadius" Value="12"/>
+      <Setter Property="BorderThickness" Value="1"/>
+      <Setter Property="BorderBrush" Value="{StaticResource BorderDarkBrush}"/>
+      <Setter Property="Background" Value="#0B1324"/>
+      <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+      <Setter Property="Height" Value="36"/>
+    </Style>
+
+    <Style Selector="ComboBox.field">
+      <Setter Property="Height" Value="36"/>
+      <Setter Property="Padding" Value="8,4"/>
+    </Style>
+
+    <Style Selector="Button.pill">
+      <Setter Property="Padding" Value="12,6"/>
+      <Setter Property="CornerRadius" Value="12"/>
+      <Setter Property="BorderThickness" Value="1"/>
+      <Setter Property="BorderBrush" Value="{StaticResource BorderDarkBrush}"/>
+      <Setter Property="Background" Value="Transparent"/>
+      <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
+      <Setter Property="FontSize" Value="12"/>
+      <Setter Property="Height" Value="32"/>
+    </Style>
+    <Style Selector="Button.pill:pointerover">
+      <Setter Property="Background" Value="#16223A"/>
+      <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+    </Style>
+
+    <Style Selector="DataGrid.modern-grid">
+      <Setter Property="RowHeight" Value="NaN"/>
+      <Setter Property="ColumnHeaderHeight" Value="42"/>
+      <Setter Property="GridLinesVisibility" Value="None"/>
+      <Setter Property="BorderThickness" Value="0"/>
+      <Setter Property="Background" Value="Transparent"/>
+      <Setter Property="HorizontalScrollBarVisibility" Value="Auto"/>
+      <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
+    </Style>
+
+    <Style Selector="DataGrid.modern-grid DataGridColumnHeader">
+      <Setter Property="Background" Value="#0B1324"/>
+      <Setter Property="BorderBrush" Value="{StaticResource BorderDarkBrush}"/>
+      <Setter Property="BorderThickness" Value="0,0,0,1"/>
+      <Setter Property="Padding" Value="10,10"/>
+      <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
+      <Setter Property="FontSize" Value="12"/>
+      <Setter Property="FontWeight" Value="SemiBold"/>
+    </Style>
+
+    <Style Selector="DataGrid.modern-grid DataGridRow:pointerover">
+      <Setter Property="Background" Value="#0B1324"/>
+    </Style>
+
+    <Style Selector="DataGrid.modern-grid DataGridCell">
+      <Setter Property="Padding" Value="10,8"/>
+      <Setter Property="BorderThickness" Value="0"/>
+    </Style>
+
+  </UserControl.Styles>
+
+  <Grid RowDefinitions="Auto,Auto,Auto,*" RowSpacing="12">
+
+    <!-- Header -->
+    <Grid Grid.Row="0" ColumnDefinitions="*,Auto" ColumnSpacing="12" VerticalAlignment="Center">
+      <StackPanel Spacing="2">
+        <TextBlock Text="ML Anomaly History"
+                   Foreground="{StaticResource TextPrimaryBrush}"
+                   FontSize="18"
+                   FontWeight="Bold"/>
+        <TextBlock Text="Runs and anomalies stored in SQLite"
+                   Foreground="{StaticResource TextSecondaryBrush}"
+                   FontSize="12"/>
+      </StackPanel>
+    </Grid>
+
+    <!-- Controls (no overflow) -->
+    <Border Grid.Row="1"
+        Classes="dashboard-card"
+        BorderBrush="{StaticResource BorderDarkBrush}"
+        BorderThickness="1">
+  <Grid RowDefinitions="Auto,Auto"
+        ColumnDefinitions="Auto,Auto,Auto,*,*"
+        ColumnSpacing="12"
+        RowSpacing="8">
+
+    <!-- Row 0: controls -->
+    <TextBlock Grid.Row="0" Grid.Column="0"
+               Text="Run:"
+               VerticalAlignment="Center"
+               Foreground="{StaticResource TextSecondaryBrush}"/>
+
+    <ComboBox x:Name="RunCombo"
+              Margin="0,13,0,0"
+              Grid.Row="0" Grid.Column="1"
+              ItemsSource="{Binding RunKeys}"
+              SelectionChanged="RunCombo_SelectionChanged"/>
+       <TextBlock Grid.Row="0" Grid.Column="2"
+               Text="Compare:"
+               VerticalAlignment="Center"
+               Foreground="{StaticResource TextSecondaryBrush}"/>
+    <ComboBox x:Name="CompareRunCombo"
+              Margin="0,13,0,0"
+              Grid.Row="0" Grid.Column="3"
+              Width="200"
+              ItemsSource="{Binding RunKeys}"
+              SelectionChanged="CompareRunCombo_SelectionChanged"/>
+
+    <ToggleSwitch x:Name="AnomalyOnlySwitch"
+                  Margin="0,13,0,0"
+                  Grid.Row="0" Grid.Column="4"
+                  Content="Anomalies only"
+                  Checked="AnomalyOnlySwitch_Changed"
+                  Unchecked="AnomalyOnlySwitch_Changed"/>
+
+    <TextBox x:Name="SearchBox"
+             Margin="0,13,0,0"
+             Grid.Row="0" Grid.Column="5"
+             Width="240"
+             Watermark="Search user/window..."
+             TextChanged="SearchBox_TextChanged"/>
+
+    <!-- Row 1: compare summary (very visible) -->
+    <TextBlock Grid.Row="1"
+               Grid.Column="0"
+               Grid.ColumnSpan="5"
+               Text="{Binding CompareSummary}"
+               Foreground="{StaticResource TextPrimaryBrush}"
+               FontSize="13"
+               FontWeight="SemiBold"
+               TextWrapping="Wrap"/>
+  </Grid>
+</Border>
+
+
+    <!-- Chart -->
+    <Border Grid.Row="2"
+            Classes="page-card"
+            BorderBrush="{StaticResource BorderDarkBrush}"
+            BorderThickness="1">
+      <StackPanel Spacing="8">
+        <TextBlock Text="Trend: Anomaly Count + Max Score (per run)"
+                   FontSize="14"
+                   FontWeight="SemiBold"
+                   Foreground="{StaticResource AccentBrush}"/>
+
+        <lvc:CartesianChart Series="{Binding ScoreSeries}"
+                            XAxes="{Binding XAxes}"
+                            YAxes="{Binding YAxes}"
+                            Height="220"/>
+      </StackPanel>
+    </Border>
+
+    <!-- Table -->
+    <Border Grid.Row="3"
+            Classes="page-card"
+            BorderBrush="{StaticResource BorderDarkBrush}"
+            BorderThickness="1">
+    <DataGrid ItemsSource="{Binding Rows}"
+          AutoGenerateColumns="False"
+          IsReadOnly="True"
+          GridLinesVisibility="None"
+          Background="Transparent"
+          BorderThickness="0"
+          Foreground="{StaticResource TextPrimaryBrush}">
+
+  <DataGrid.Columns>
+
+    <DataGridTemplateColumn Header="User Window" Width="3*">
+      <DataGridTemplateColumn.CellTemplate>
+        <DataTemplate>
+          <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+            <TextBlock Grid.Column="0"
+                       Text="{Binding UserWindow}"
+                       MaxLines="1"
+                       TextTrimming="CharacterEllipsis"/>
+            <Button Grid.Column="1"
+                    Content="View"
+                    Click="ViewRow_Click"/>
+          </Grid>
+        </DataTemplate>
+      </DataGridTemplateColumn.CellTemplate>
+    </DataGridTemplateColumn>
+
+    <DataGridTextColumn Header="Score" Binding="{Binding Score}" Width="*"/>
+    <DataGridTextColumn Header="Anomaly" Binding="{Binding IsAnomaly}" Width="*"/>
+
+    <!-- NEW -->
+    <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="*"/>
+
+    <DataGridTextColumn Header="CreatedUtc" Binding="{Binding CreatedUtc}" Width="2*"/>
+
+  </DataGrid.Columns>
+</DataGrid>
+
+    </Border>
+
+  </Grid>
+</UserControl>
